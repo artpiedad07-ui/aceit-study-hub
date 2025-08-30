@@ -1,0 +1,273 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>LearnWorld — All Levels Study Guide</title>
+  <meta name="description" content="An all-in-one study guide covering Elementary, Middle, High School and College topics. Search, quizzes, notes, and ad-ready slots." />
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--muted:#93a3c6;--accent:#6ea8fe;--accent2:#00d08a;--surface:#0b1220;--text:#e8eefc;--glass:rgba(255,255,255,0.03)}
+    *{box-sizing:border-box}html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial,sans-serif;background:linear-gradient(180deg,#061020,var(--bg));color:var(--text)}
+    .app{display:grid;grid-template-columns:300px 1fr;min-height:100vh}
+    @media (max-width:920px){.app{grid-template-columns:1fr}}
+    .sidebar{padding:18px;border-right:1px solid rgba(255,255,255,0.04);background:rgba(6,12,24,0.6);backdrop-filter:blur(6px)}
+    .brand{display:flex;gap:10px;align-items:center;margin-bottom:10px}
+    .logo{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-weight:800;color:#021022}
+    h1,h2,h3{margin:0}
+    .muted{color:var(--muted);font-size:13px}
+    .levels{margin-top:12px;display:flex;flex-direction:column;gap:10px}
+    .level{background:var(--card);padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+    .level header{display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+    .subjects{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+    .subject{padding:8px;border-radius:10px;background:rgba(255,255,255,0.02);cursor:pointer}
+    .search{margin:12px 0}
+    .search input{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text)}
+    main{padding:24px}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+    .controls{display:flex;gap:8px}
+    button{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 12px;border-radius:10px;color:var(--text);cursor:pointer}
+    button.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border:none;color:#021022;font-weight:700}
+    .content-grid{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-top:16px}
+    @media (max-width:920px){.content-grid{grid-template-columns:1fr}}
+    .card{background:var(--surface);padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+    .topic-list{display:grid;gap:8px}
+    .topic{padding:10px;border-radius:10px;background:rgba(255,255,255,0.02);cursor:pointer}
+    .topic:hover{border:1px solid rgba(255,255,255,0.04)}
+    .ad{border:1px dashed rgba(255,255,255,0.04);padding:12px;text-align:center;color:var(--muted);border-radius:10px}
+    textarea.note{width:100%;min-height:120px;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text)}
+    .quiz .option{padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);cursor:pointer;margin-top:8px}
+    .option.correct{border-color:var(--accent2);background:rgba(0,208,138,0.08)}
+    .option.wrong{border-color:#ff5c7a;background:rgba(255,92,122,0.06)}
+    footer{margin-top:18px;color:var(--muted);font-size:13px;text-align:center}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">LW</div>
+        <div>
+          <div style="font-weight:800">LearnWorld</div>
+          <div class="muted">Elementary → College — All Levels</div>
+        </div>
+      </div><div class="search">
+    <input id="search" placeholder="Search topics, e.g., fractions, mitosis, calculus" />
+  </div>
+
+  <div class="levels" id="levels">
+    <!-- Levels and subjects are rendered here -->
+  </div>
+
+  <div style="margin-top:12px" class="ad">AD SLOT (sidebar) — paste ad code here</div>
+</aside>
+
+<main>
+  <div class="topbar">
+    <div>
+      <h1 id="title">Welcome to LearnWorld</h1>
+      <div class="muted" id="subtitle">Pick a level and subject to begin</div>
+    </div>
+    <div class="controls">
+      <button onclick="window.print()">Print</button>
+      <button id="themeToggle">Toggle Light</button>
+      <button class="primary" id="getLink">Share</button>
+    </div>
+  </div>
+
+  <div class="content-grid">
+    <section class="card" id="mainContent">
+      <h2 id="topicTitle">Overview</h2>
+      <p id="topicSummary">This site contains structured study materials across every school level. Use the search to jump directly to topics. Open a topic for summary, key points, example problems, quick quizzes, and personal notes saved locally.</p>
+
+      <div id="topicDetails"></div>
+    </section>
+
+    <aside class="card">
+      <h3>Quick Topics</h3>
+      <div id="quickList" class="topic-list"></div>
+
+      <div style="margin-top:12px" class="ad">AD SLOT (300×250) — paste ad code here</div>
+
+      <h3 style="margin-top:12px">My Notes</h3>
+      <textarea id="myNotes" class="note" placeholder="Write notes for the current topic — auto-saved locally"></textarea>
+    </aside>
+  </div>
+
+  <footer>
+    <div class="muted">Made with ❤️ — LearnWorld. Ready for customization and expansion.</div>
+  </footer>
+</main>
+
+  </div>  <script>
+    // --- DATA: levels -> subjects -> topics (sample representative list covering many areas)
+    const DATA = {
+      Elementary: {
+        "Subjects": [
+          {name:"Math", topics:[
+            {id:'e-math-1', title:'Numbers & Place Value', summary:'Understanding whole numbers, place value, comparing and ordering, rounding.'},
+            {id:'e-math-2', title:'Basic Operations', summary:'Addition, subtraction, multiplication, division with whole numbers.'},
+            {id:'e-math-3', title:'Fractions & Decimals', summary:'Simple fractions, equivalent fractions, introduction to decimals.'}
+          ]},
+          {name:"Science", topics:[
+            {id:'e-sci-1',title:'Plants & Animals',summary:'Basic life cycles, habitats, and needs of living things.'},
+            {id:'e-sci-2',title:'Earth & Weather',summary:'Seasons, weather patterns, sun and moon basics.'}
+          ]},
+          {name:"English", topics:[{id:'e-eng-1',title:'Reading Comprehension',summary:'Main idea, details, sequencing.'},{id:'e-eng-2',title:'Grammar Basics',summary:'Nouns, verbs, simple punctuation.'}]}
+        ]
+      },
+      Middle: {
+        "Subjects":[
+          {name:'Math', topics:[{id:'m-math-1',title:'Pre-Algebra Basics',summary:'Integers, factors, multiples, simple equations.'},{id:'m-math-2',title:'Ratio & Proportion',summary:'Ratios, rates, percent problems.'}]},
+          {name:'Science', topics:[{id:'m-sci-1',title:'Cells & Organisms',summary:'Cell structure, basic genetics.'},{id:'m-sci-2',title:'Forces & Motion',summary:'Newtonian basics and simple machines.'}]},
+          {name:'English', topics:[{id:'m-eng-1',title:'Essay Writing',summary:'Paragraph structure, thesis, supporting evidence.'}]}
+        ]
+      },
+      High: {
+        "Subjects":[
+          {name:'Mathematics', topics:[{id:'h-math-1',title:'Algebra I',summary:'Linear equations, functions, graphing.'},{id:'h-math-2',title:'Geometry',summary:'Angles, proofs, circles, area/volume.'},{id:'h-math-3',title:'Trigonometry',summary:'Ratios, unit circle, identities.'}]},
+          {name:'Science', topics:[{id:'h-sci-1',title:'Biology',summary:'Cellular biology, evolution, ecology.'},{id:'h-sci-2',title:'Chemistry',summary:'Atoms, periodic table, reactions.'}]},
+          {name:'English', topics:[{id:'h-eng-1',title:'Literature Analysis',summary:'Themes, devices, close reading.'}]},
+          {name:'History', topics:[{id:'h-hist-1',title:'World History',summary:'Major eras, revolutions, world wars.'}]}
+        ]
+      },
+      College: {
+        "Subjects":[
+          {name:'Mathematics', topics:[{id:'c-math-1',title:'Calculus I',summary:'Limits, derivatives, applications.'},{id:'c-math-2',title:'Linear Algebra',summary:'Matrices, vectors, systems of equations.'}]},
+          {name:'Science', topics:[{id:'c-sci-1',title:'Organic Chemistry',summary:'Functional groups, basic reactions.'},{id:'c-sci-2',title:'Microbiology',summary:'Cellular microbes, lab basics.'}]},
+          {name:'Computer Science', topics:[{id:'c-cs-1',title:'Programming Fundamentals',summary:'Data structures, algorithms, complexity.'},{id:'c-cs-2',title:'Database Systems',summary:'SQL, normalization, transactions.'}]}
+        ]
+      }
+    };
+
+    // --- Utilities & Rendering ---
+    const levelsEl = document.getElementById('levels');
+    const searchEl = document.getElementById('search');
+    const titleEl = document.getElementById('title');
+    const subtitleEl = document.getElementById('subtitle');
+    const mainContent = document.getElementById('mainContent');
+    const topicDetails = document.getElementById('topicDetails');
+    const quickList = document.getElementById('quickList');
+    const myNotes = document.getElementById('myNotes');
+
+    let state = {level:null, subject:null, topic:null};
+
+    function renderLevels(filter=''){
+      levelsEl.innerHTML = '';
+      Object.entries(DATA).forEach(([levelName, levelObj])=>{
+        const lvl = document.createElement('div'); lvl.className='level';
+        const header = document.createElement('header');
+        header.innerHTML = `<strong>${levelName}</strong><span class=muted style="font-size:12px">${levelObj.Subjects.length} subjects</span>`;
+        header.onclick = ()=>{ lvl.classList.toggle('open'); }
+        lvl.appendChild(header);
+        const subjWrap = document.createElement('div'); subjWrap.className='subjects';
+        levelObj.Subjects.forEach(sub=>{
+          const sEl = document.createElement('div'); sEl.className='subject'; sEl.textContent=sub.name;
+          sEl.onclick = ()=>{ renderTopics(levelName, sub); }
+          subjWrap.appendChild(sEl);
+        });
+        lvl.appendChild(subjWrap);
+        levelsEl.appendChild(lvl);
+      });
+    }
+
+    function renderTopics(levelName, subject){
+      state.level = levelName; state.subject = subject.name; state.topic=null;
+      titleEl.textContent = `${state.level} • ${state.subject}`;
+      subtitleEl.textContent = 'Select a topic to view summary, examples, and quiz.';
+      const topics = subject.topics;
+      mainContent.querySelector('#topicTitle').textContent = `${subject.name} — Topics`;
+      topicDetails.innerHTML = `<div class="topic-list">${topics.map(t=>`<div class="topic" onclick="openTopic('${encodeURIComponent(levelName)}','${encodeURIComponent(subject.name)}','${encodeURIComponent(t.id)}')">${t.title}</div>`).join('')}</div>`;
+      quickList.innerHTML = topics.slice(0,6).map(t=>`<div class='topic' onclick="openTopic('${encodeURIComponent(levelName)}','${encodeURIComponent(subject.name)}','${encodeURIComponent(t.id)}')">${t.title}</div>`).join('');
+    }
+
+    function findTopic(level, subjectName, topicId){
+      const levelObj = DATA[level];
+      if(!levelObj) return null;
+      const sub = levelObj.Subjects.find(s=>s.name===subjectName);
+      if(!sub) return null;
+      const t = sub.topics.find(x=>x.id===topicId);
+      return t? {...t, subject:sub.name, level}: null;
+    }
+
+    window.openTopic = function(level, subject, topicId){
+      level = decodeURIComponent(level); subject=decodeURIComponent(subject); topicId=decodeURIComponent(topicId);
+      const t = findTopic(level, subject, topicId);
+      if(!t) return alert('Topic not found');
+      state.topic = t.id;
+      titleEl.textContent = `${t.title} — ${t.level}`;
+      subtitleEl.textContent = `${t.subject}`;
+
+      // Render details: summary, keyPoints placeholder, example, quiz placeholder
+      topicDetails.innerHTML = `
+        <h3>Summary</h3>
+        <p>${t.summary || 'Short summary coming soon.'}</p>
+        <h3>Key Points</h3>
+        <ul><li>Key point 1</li><li>Key point 2</li><li>Key point 3</li></ul>
+        <h3>Example</h3>
+        <pre style="white-space:pre-wrap">Example problem or worked solution goes here.</pre><h3>Quick Quiz</h3>
+    <div class="quiz">
+      <div class="q">Q1. Sample question?<div class="option" onclick="answer(0,0)">A. Option 1</div><div class="option" onclick="answer(0,1)">B. Option 2</div></div>
+    </div>
+  `;
+
+  // Load notes saved for this topic
+  const key = `notes:${t.level}:${t.subject}:${t.id}`;
+  myNotes.value = localStorage.getItem(key) || '';
+  myNotes.dataset.key = key;
+}
+
+function answer(qIdx, idx){
+  // demo: mark correct if idx==0
+  const opts = document.querySelectorAll('.option');
+  opts.forEach(o=>o.onclick=null);
+  opts[idx].classList.add(idx===0? 'correct':'wrong');
+}
+
+// Search across all topics
+searchEl.addEventListener('input', e=>{
+  const q = e.target.value.trim().toLowerCase();
+  if(!q){ renderLevels(); mainContent.querySelector('#topicTitle').textContent='Overview'; topicDetails.innerHTML=''; quickList.innerHTML=''; return; }
+  const results = [];
+  Object.entries(DATA).forEach(([lvl, obj])=>{
+    obj.Subjects.forEach(s=>{
+      s.topics.forEach(t=>{
+        const txt = (t.title + ' ' + (t.summary||'') + ' ' + s.name + ' ' + lvl).toLowerCase();
+        if(txt.includes(q)) results.push({lvl, subject:s.name, topic:t});
+      });
+    });
+  });
+  // render results
+  titleEl.textContent = `Search results for "${q}"`;
+  subtitleEl.textContent = `${results.length} topics found`;
+  topicDetails.innerHTML = results.map(r=>`<div class="topic" onclick="openTopic('${encodeURIComponent(r.lvl)}','${encodeURIComponent(r.subject)}','${encodeURIComponent(r.topic.id)}')">${r.topic.title} <div class='muted' style='font-size:12px'>${r.subject} • ${r.lvl}</div></div>`).join('') || '<div class="muted">No results</div>';
+  quickList.innerHTML = '';
+});
+
+// Auto-save notes
+myNotes.addEventListener('input', e=>{
+  const k = e.target.dataset.key;
+  if(k) localStorage.setItem(k, e.target.value);
+});
+
+// Theme toggle (simple light/dark)
+document.getElementById('themeToggle').addEventListener('click', ()=>{
+  if(document.documentElement.style.getPropertyValue('--bg') === '#ffffff'){
+    document.documentElement.style.setProperty('--bg','#0f1724');
+    document.body.style.color='var(--text)';
+  } else {
+    document.documentElement.style.setProperty('--bg','#ffffff');
+    document.body.style.color='#111';
+  }
+});
+
+// Share link
+document.getElementById('getLink').addEventListener('click', ()=>{
+  navigator.clipboard.writeText(location.href);
+  alert('Page link copied to clipboard');
+});
+
+// Initial render
+renderLevels();
+
+  </script>
+</body>
+</html>
